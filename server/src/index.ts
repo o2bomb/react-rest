@@ -14,7 +14,7 @@ import { globalErrorHandler } from "./controllers/error";
 const main = async () => {
   await createConnection({
     type: "postgres",
-    url: `postgresql://postgres:${process.env.POSTGRES_PASSWORD}@postgres:5432/${process.env.DATABASE_NAME}`,
+    url: process.env.DATABASE_URL,
     logging: true,
     synchronize: !__prod__, // makes sure entities are synced with database. dont use in prod
     entities: [Todo],
@@ -39,6 +39,7 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // lasts 10 years
         httpOnly: true,
         sameSite: "lax",
+        domain: __prod__ ? process.env.COOKIE_DOMAIN : undefined,
         secure: __prod__, // cookie only works in https (in prod)
       },
       saveUninitialized: false,
